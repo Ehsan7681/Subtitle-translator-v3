@@ -1,0 +1,66 @@
+{
+  "name": "smart-translator",
+  "version": "3.0.0",
+  "description": "مترجم هوشمند با استفاده از هوش مصنوعی - ترجمه دقیق و سریع",
+  "main": "index.html",
+  "scripts": {
+    "start": "python -m http.server 8000",
+    "serve": "npx serve .",
+    "build": "echo 'No build process needed - Static files'",
+    "deploy": "git push origin main",
+    "test": "echo 'No tests specified'",
+    "lint": "echo 'No linting configured'",
+    "dev": "python -m http.server 8000"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/YOUR_USERNAME/smart-translator.git"
+  },
+  "keywords": [
+    "translator",
+    "ai",
+    "artificial-intelligence",
+    "pwa",
+    "progressive-web-app",
+    "persian",
+    "farsi",
+    "openrouter",
+    "glass-morphism",
+    "mobile-first",
+    "responsive",
+    "multilingual",
+    "speech-recognition",
+    "text-to-speech"
+  ],
+  "author": "Your Name <your.email@example.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/YOUR_USERNAME/smart-translator/issues"
+  },
+  "homepage": "https://YOUR_USERNAME.github.io/smart-translator",
+  "engines": {
+    "node": ">=14.0.0"
+  },
+  "browserslist": [
+    "> 1%",
+    "last 2 versions",
+    "not dead",
+    "not ie 11"
+  ],
+  "devDependencies": {},
+  "dependencies": {},
+  "pwa": {
+    "name": "مترجم هوشمند",
+    "short_name": "مترجم هوشمند",
+    "theme_color": "#4299e1",
+    "background_color": "#f8fafc",
+    "display": "standalone",
+    "orientation": "portrait-primary",
+    "start_url": "/",
+    "scope": "/"
+  },
+  "funding": {
+    "type": "github",
+    "url": "https://github.com/sponsors/YOUR_USERNAME"
+  }
+} 

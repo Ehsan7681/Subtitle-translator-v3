@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="format-detection" content="telephone=no">
+    <title>مترجم هوشمند</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#4299e1">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="translucent">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Header -->
+        <header class="glass-header">
+            <div class="header-content">
+                <h1 class="app-title">
+                    <span class="title-icon">🌐</span>
+                    مترجم هوشمند
+                </h1>
+                <button class="settings-btn" id="settingsBtn">
+                    <span class="settings-icon">⚙️</span>
+                </button>
+            </div>
+        </header>
+
+        <!-- Settings Panel -->
+        <div class="settings-panel" id="settingsPanel">
+            <div class="glass-card">
+                <h3>تنظیمات</h3>
+                <div class="setting-group">
+                    <label for="apiKey">کلید API OpenRouter:</label>
+                    <input type="password" id="apiKey" placeholder="کلید API خود را وارد کنید">
+                </div>
+                <div class="setting-group">
+                    <label for="modelSelect">مدل هوش مصنوعی:</label>
+                    <select id="modelSelect">
+                        <option value="openai/gpt-4o-mini">در حال بارگذاری مدل‌ها...</option>
+                    </select>
+                </div>
+                <div class="setting-group">
+                    <label for="themeSelect">تم رنگی:</label>
+                    <select id="themeSelect">
+                        <option value="pearl">صدفی کلاسیک</option>
+                        <option value="ocean">اقیانوس آبی</option>
+                        <option value="sunset">غروب نارنجی</option>
+                        <option value="forest">جنگل سبز</option>
+                        <option value="purple">بنفش شاهانه</option>
+                        <option value="rose">رز طلایی</option>
+                        <option value="midnight">شب تیره</option>
+                        <option value="aurora">شفق قطبی</option>
+                    </select>
+                </div>
+                <div class="theme-preview" id="themePreview">
+                    <div class="preview-card">
+                        <div class="preview-header"></div>
+                        <div class="preview-content">
+                            <div class="preview-text"></div>
+                            <div class="preview-button"></div>
+                        </div>
+                    </div>
+                </div>
+                <button class="save-btn" id="saveSettings">ذخیره تنظیمات</button>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Language Selection -->
+            <div class="language-selector glass-card">
+                <div class="lang-group">
+                    <label>از زبان:</label>
+                    <select id="sourceLang">
+                        <option value="auto">تشخیص خودکار</option>
+                        <option value="fa">فارسی</option>
+                        <option value="en">انگلیسی</option>
+                        <option value="ar">عربی</option>
+                        <option value="fr">فرانسوی</option>
+                        <option value="de">آلمانی</option>
+                        <option value="es">اسپانیایی</option>
+                        <option value="it">ایتالیایی</option>
+                        <option value="ru">روسی</option>
+                        <option value="ja">ژاپنی</option>
+                        <option value="ko">کره‌ای</option>
+                        <option value="zh">چینی</option>
+                        <option value="tr">ترکی</option>
+                    </select>
+                </div>
+                
+                <button class="swap-btn" id="swapBtn">
+                    <span class="swap-icon">⇄</span>
+                </button>
+                
+                <div class="lang-group">
+                    <label>به زبان:</label>
+                    <select id="targetLang">
+                        <option value="en">انگلیسی</option>
+                        <option value="fa">فارسی</option>
+                        <option value="ar">عربی</option>
+                        <option value="fr">فرانسوی</option>
+                        <option value="de">آلمانی</option>
+                        <option value="es">اسپانیایی</option>
+                        <option value="it">ایتالیایی</option>
+                        <option value="ru">روسی</option>
+                        <option value="ja">ژاپنی</option>
+                        <option value="ko">کره‌ای</option>
+                        <option value="zh">چینی</option>
+                        <option value="tr">ترکی</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Translation Area -->
+            <div class="translation-container">
+                <div class="input-section glass-card">
+                    <div class="input-header">
+                        <span class="section-title">متن مبدأ</span>
+                        <div class="input-actions">
+                            <button class="action-btn" id="clearBtn" title="پاک کردن">
+                                <span>🗑️</span>
+                            </button>
+                            <button class="action-btn" id="pasteBtn" title="چسباندن">
+                                <span>📋</span>
+                            </button>
+                            <button class="action-btn" id="voiceBtn" title="ورودی صوتی">
+                                <span id="voiceIcon">🎤</span>
+                            </button>
+                        </div>
+                    </div>
+                    <textarea 
+                        id="inputText" 
+                        placeholder="متن خود را برای ترجمه وارد کنید... (Ctrl+Enter برای ترجمه)"
+                    ></textarea>
+                    <div class="char-count">
+                        <span id="charCount">0</span> / 5000 کاراکتر
+                    </div>
+                </div>
+
+                <div class="output-section glass-card">
+                    <div class="output-header">
+                        <span class="section-title">ترجمه</span>
+                        <div class="output-actions">
+                            <button class="action-btn" id="copyBtn" title="کپی کردن">
+                                <span>📄</span>
+                            </button>
+                            <button class="action-btn" id="speakBtn" title="خواندن متن">
+                                <span>🔊</span>
+                            </button>
+                            <button class="action-btn" id="shareBtn" title="اشتراک‌گذاری">
+                                <span>📤</span>
+                            </button>
+                        </div>
+                    </div>
+                    <div id="outputText" class="output-text">
+                        <div class="placeholder">ترجمه اینجا نمایش داده می‌شود...</div>
+                    </div>
+                    <div class="translation-info" id="translationInfo"></div>
+                </div>
+            </div>
+
+            <!-- Quick Actions -->
+            <div class="quick-actions glass-card">
+                <button class="quick-btn primary" id="translateBtn">
+                    <span class="btn-icon">🚀</span>
+                    ترجمه کن
+                </button>
+                <button class="quick-btn secondary" id="saveBtn">
+                    <span class="btn-icon">💾</span>
+                    ذخیره
+                </button>
+                <button class="quick-btn secondary" id="historyBtn">
+                    <span class="btn-icon">📚</span>
+                    تاریخچه
+                </button>
+            </div>
+        </main>
+
+        <!-- History Panel -->
+        <div class="history-panel" id="historyPanel">
+            <div class="glass-card">
+                <div class="panel-header">
+                    <h3>تاریخچه ترجمه‌ها</h3>
+                    <button class="close-btn" id="closeHistory">×</button>
+                </div>
+                <div class="history-list" id="historyList">
+                    <div class="empty-history">
+                        <span class="empty-icon">📝</span>
+                        <p>هنوز ترجمه‌ای ذخیره نشده است</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Loading Overlay -->
+        <div class="loading-overlay" id="loadingOverlay">
+            <div class="loading-spinner">
+                <div class="spinner"></div>
+                <p>در حال ترجمه...</p>
+            </div>
+        </div>
+
+        <!-- Toast Notifications -->
+        <div class="toast-container" id="toastContainer"></div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html> 
