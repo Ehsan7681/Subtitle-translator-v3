@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تست تنظیمات - مترجم هوشمند</title>
+    <style>
+        body {
+            font-family: 'Vazirmatn', sans-serif;
+            padding: 20px;
+            background: #f0f0f0;
+            direction: rtl;
+        }
+        .test-container {
+            max-width: 600px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+        }
+        .test-section {
+            margin: 20px 0;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 5px;
+            border: 1px solid #dee2e6;
+        }
+        .test-section h3 {
+            margin-top: 0;
+            color: #495057;
+        }
+        .status {
+            padding: 5px 10px;
+            border-radius: 3px;
+            display: inline-block;
+            margin: 5px 0;
+        }
+        .status.success {
+            background: #d4edda;
+            color: #155724;
+        }
+        .status.error {
+            background: #f8d7da;
+            color: #721c24;
+        }
+        .status.warning {
+            background: #fff3cd;
+            color: #856404;
+        }
+        button {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover {
+            background: #0056b3;
+        }
+        pre {
+            background: #f1f3f4;
+            padding: 10px;
+            border-radius: 5px;
+            overflow-x: auto;
+            font-size: 12px;
+        }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <h1>تست تنظیمات مترجم هوشمند</h1>
+        
+        <div class="test-section">
+            <h3>وضعیت LocalStorage</h3>
+            <div id="localStorage-status"></div>
+            <button onclick="checkLocalStorage()">بررسی مجدد</button>
+            <button onclick="clearLocalStorage()">پاک کردن همه</button>
+        </div>
+        
+        <div class="test-section">
+            <h3>تنظیمات ذخیره شده</h3>
+            <div id="settings-display"></div>
+            <button onclick="displaySettings()">نمایش تنظیمات</button>
+        </div>
+        
+        <div class="test-section">
+            <h3>تاریخچه ترجمه‌ها</h3>
+            <div id="history-display"></div>
+            <button onclick="displayHistoryTest()">نمایش تاریخچه</button>
+        </div>
+        
+        <div class="test-section">
+            <h3>Service Worker</h3>
+            <div id="sw-status"></div>
+            <button onclick="checkServiceWorker()">بررسی Service Worker</button>
+        </div>
+        
+        <div class="test-section">
+            <h3>PWA Status</h3>
+            <div id="pwa-status"></div>
+            <button onclick="checkPWA()">بررسی PWA</button>
+        </div>
+    </div>
+    
+    <script>
+        // Check LocalStorage
+        function checkLocalStorage() {
+            const status = document.getElementById('localStorage-status');
+            try {
+                localStorage.setItem('test', 'test');
+                localStorage.removeItem('test');
+                status.innerHTML = '<span class="status success">LocalStorage فعال است</span>';
+                
+                // Show storage size
+                let totalSize = 0;
+                for (let key in localStorage) {
+                    if (localStorage.hasOwnProperty(key)) {
+                        totalSize += localStorage[key].length + key.length;
+                    }
+                }
+                status.innerHTML += `<br>حجم استفاده شده: ${(totalSize / 1024).toFixed(2)} KB`;
+            } catch (e) {
+                status.innerHTML = '<span class="status error">LocalStorage غیرفعال است</span>';
+            }
+        }
+        
+        // Display Settings
+        function displaySettings() {
+            const display = document.getElementById('settings-display');
+            const settings = localStorage.getItem('smart_translator_settings');
+            
+            if (settings) {
+                try {
+                    const parsed = JSON.parse(settings);
+                    display.innerHTML = '<span class="status success">تنظیمات یافت شد:</span>';
+                    display.innerHTML += '<pre>' + JSON.stringify(parsed, null, 2) + '</pre>';
+                } catch (e) {
+                    display.innerHTML = '<span class="status error">خطا در خواندن تنظیمات</span>';
+                }
+            } else {
+                display.innerHTML = '<span class="status warning">تنظیماتی ذخیره نشده است</span>';
+            }
+        }
+        
+        // Display History
+        function displayHistoryTest() {
+            const display = document.getElementById('history-display');
+            const history = localStorage.getItem('smart_translator_history');
+            
+            if (history) {
+                try {
+                    const parsed = JSON.parse(history);
+                    display.innerHTML = `<span class="status success">تعداد ترجمه‌ها: ${parsed.length}</span>`;
+                    if (parsed.length > 0) {
+                        display.innerHTML += '<pre>' + JSON.stringify(parsed[0], null, 2) + '</pre>';
+                    }
+                } catch (e) {
+                    display.innerHTML = '<span class="status error">خطا در خواندن تاریخچه</span>';
+                }
+            } else {
+                display.innerHTML = '<span class="status warning">تاریخچه‌ای وجود ندارد</span>';
+            }
+        }
+        
+        // Check Service Worker
+        function checkServiceWorker() {
+            const status = document.getElementById('sw-status');
+            
+            if ('serviceWorker' in navigator) {
+                navigator.serviceWorker.getRegistration().then(reg => {
+                    if (reg) {
+                        status.innerHTML = '<span class="status success">Service Worker ثبت شده است</span>';
+                        status.innerHTML += `<br>Scope: ${reg.scope}`;
+                        status.innerHTML += `<br>State: ${reg.active ? 'Active' : 'Not Active'}`;
+                    } else {
+                        status.innerHTML = '<span class="status warning">Service Worker ثبت نشده است</span>';
+                    }
+                });
+            } else {
+                status.innerHTML = '<span class="status error">مرورگر از Service Worker پشتیبانی نمی‌کند</span>';
+            }
+        }
+        
+        // Check PWA
+        function checkPWA() {
+            const status = document.getElementById('pwa-status');
+            let pwaStatus = [];
+            
+            // Check HTTPS
+            if (location.protocol === 'https:' || location.hostname === 'localhost') {
+                pwaStatus.push('<span class="status success">HTTPS/Localhost ✓</span>');
+            } else {
+                pwaStatus.push('<span class="status error">نیاز به HTTPS</span>');
+            }
+            
+            // Check manifest
+            const manifestLink = document.querySelector('link[rel="manifest"]');
+            if (manifestLink) {
+                pwaStatus.push('<span class="status success">Manifest موجود است</span>');
+            } else {
+                pwaStatus.push('<span class="status error">Manifest یافت نشد</span>');
+            }
+            
+            // Check install prompt
+            if (window.matchMedia('(display-mode: standalone)').matches) {
+                pwaStatus.push('<span class="status success">در حالت PWA اجرا می‌شود</span>');
+            } else {
+                pwaStatus.push('<span class="status warning">در مرورگر اجرا می‌شود</span>');
+            }
+            
+            status.innerHTML = pwaStatus.join('<br>');
+        }
+        
+        // Clear LocalStorage
+        function clearLocalStorage() {
+            if (confirm('آیا مطمئن هستید؟ همه داده‌ها پاک خواهند شد!')) {
+                localStorage.clear();
+                alert('همه داده‌ها پاک شدند');
+                location.reload();
+            }
+        }
+        
+        // Run initial checks
+        checkLocalStorage();
+        checkServiceWorker();
+        checkPWA();
+    </script>
+</body>
+</html> 

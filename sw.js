@@ -1,68 +1,37 @@
-const CACHE_NAME = 'smart-translator-v1.0.0';
+// Service Worker for Smart Translator PWA
+const CACHE_NAME = 'smart-translator-v1';
 const urlsToCache = [
-    '/',
-    '/index.html',
-    '/styles.css',
-    '/script.js',
-    '/manifest.json',
+    './',
+    './index.html',
+    './styles.css',
+    './script.js',
+    './manifest.json',
+    './icons/icon-192.png',
+    './icons/icon-512.png',
     'https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;600;700&display=swap'
 ];
 
-// Install event - cache resources
-self.addEventListener('install', function(event) {
+// Install event - cache assets
+self.addEventListener('install', event => {
     event.waitUntil(
         caches.open(CACHE_NAME)
-            .then(function(cache) {
+            .then(cache => {
                 console.log('Opened cache');
                 return cache.addAll(urlsToCache);
             })
-    );
-});
-
-// Fetch event - serve from cache when offline
-self.addEventListener('fetch', function(event) {
-    event.respondWith(
-        caches.match(event.request)
-            .then(function(response) {
-                // Return cached version or fetch from network
-                if (response) {
-                    return response;
-                }
-                
-                // Clone the request because it's a stream
-                const fetchRequest = event.request.clone();
-                
-                return fetch(fetchRequest).then(function(response) {
-                    // Check if we received a valid response
-                    if (!response || response.status !== 200 || response.type !== 'basic') {
-                        return response;
-                    }
-                    
-                    // Clone the response because it's a stream
-                    const responseToCache = response.clone();
-                    
-                    caches.open(CACHE_NAME)
-                        .then(function(cache) {
-                            cache.put(event.request, responseToCache);
-                        });
-                    
-                    return response;
-                }).catch(function() {
-                    // Return offline page or cached content
-                    if (event.request.destination === 'document') {
-                        return caches.match('/index.html');
-                    }
-                });
+            .catch(error => {
+                console.error('Failed to cache:', error);
             })
     );
+    self.skipWaiting();
 });
 
 // Activate event - clean up old caches
-self.addEventListener('activate', function(event) {
+self.addEventListener('activate', event => {
     event.waitUntil(
-        caches.keys().then(function(cacheNames) {
+        caches.keys().then(cacheNames => {
             return Promise.all(
-                cacheNames.map(function(cacheName) {
+                cacheNames.map(cacheName => {
                     if (cacheName !== CACHE_NAME) {
                         console.log('Deleting old cache:', cacheName);
                         return caches.delete(cacheName);
@@ -71,23 +40,78 @@ self.addEventListener('activate', function(event) {
             );
         })
     );
+    self.clients.claim();
+});
+
+// Fetch event - serve from cache, fallback to network
+self.addEventListener('fetch', event => {
+    // Skip non-GET requests
+    if (event.request.method !== 'GET') {
+        return;
+    }
+    
+    // Skip API requests
+    if (event.request.url.includes('openrouter.ai')) {
+        return;
+    }
+    
+    event.respondWith(
+        caches.match(event.request)
+            .then(response => {
+                // Cache hit - return response
+                if (response) {
+                    return response;
+                }
+                
+                // Clone the request
+                const fetchRequest = event.request.clone();
+                
+                return fetch(fetchRequest).then(response => {
+                    // Check if valid response
+                    if (!response || response.status !== 200 || response.type !== 'basic') {
+                        return response;
+                    }
+                    
+                    // Clone the response
+                    const responseToCache = response.clone();
+                    
+                    // Cache the response
+                    caches.open(CACHE_NAME)
+                        .then(cache => {
+                            cache.put(event.request, responseToCache);
+                        });
+                    
+                    return response;
+                }).catch(() => {
+                    // Offline fallback
+                    if (event.request.destination === 'document') {
+                        return caches.match('./index.html');
+                    }
+                });
+            })
+    );
 });
 
 // Background sync for offline translations
-self.addEventListener('sync', function(event) {
-    if (event.tag === 'background-sync') {
-        event.waitUntil(doBackgroundSync());
+self.addEventListener('sync', event => {
+    if (event.tag === 'sync-translations') {
+        event.waitUntil(syncTranslations());
     }
 });
 
-function doBackgroundSync() {
-    // Handle offline translation queue
-    return new Promise(function(resolve) {
-        // Implementation for handling offline translations
-        console.log('Background sync triggered');
-        resolve();
-    });
+// Sync offline translations when back online
+async function syncTranslations() {
+    // This would sync any offline translations
+    // For now, just log
+    console.log('Syncing translations...');
 }
+
+// Handle messages from the app
+self.addEventListener('message', event => {
+    if (event.data && event.data.type === 'SKIP_WAITING') {
+        self.skipWaiting();
+    }
+});
 
 // Push notifications (if needed in future)
 self.addEventListener('push', function(event) {
@@ -127,13 +151,6 @@ self.addEventListener('notificationclick', function(event) {
         event.waitUntil(
             clients.openWindow('/')
         );
-    }
-});
-
-// Message handler for communication with main thread
-self.addEventListener('message', function(event) {
-    if (event.data && event.data.type === 'SKIP_WAITING') {
-        self.skipWaiting();
     }
 });
 

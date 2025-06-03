@@ -45,6 +45,38 @@
                     </select>
                 </div>
                 <div class="setting-group">
+                    <label for="toneSelect">لحن ترجمه:</label>
+                    <select id="toneSelect">
+                        <option value="neutral">🎯 خنثی (پیش‌فرض)</option>
+                        <option value="formal">🎩 رسمی</option>
+                        <option value="informal">😊 غیررسمی</option>
+                        <option value="friendly">🤝 دوستانه</option>
+                        <option value="professional">💼 حرفه‌ای</option>
+                        <option value="academic">🎓 آکادمیک</option>
+                        <option value="business">📊 تجاری</option>
+                        <option value="casual">😎 راحت</option>
+                        <option value="polite">🙏 مؤدبانه</option>
+                        <option value="direct">⚡ مستقیم</option>
+                        <option value="diplomatic">🕊️ دیپلماتیک</option>
+                        <option value="technical">🔧 فنی</option>
+                        <option value="creative">🎨 خلاقانه</option>
+                        <option value="poetic">🌹 شاعرانه</option>
+                        <option value="humorous">😄 طنزآمیز</option>
+                        <option value="serious">😐 جدی</option>
+                        <option value="warm">🔥 گرم</option>
+                        <option value="cold">❄️ سرد</option>
+                        <option value="enthusiastic">🚀 پرشور</option>
+                        <option value="calm">🧘 آرام</option>
+                        <option value="persuasive">💪 متقاعدکننده</option>
+                        <option value="informative">📚 آموزشی</option>
+                        <option value="conversational">💬 گفتگویی</option>
+                        <option value="elegant">✨ شیک</option>
+                    </select>
+                </div>
+                <div class="tone-description" id="toneDescription">
+                    <p>لحن خنثی: ترجمه استاندارد و بی‌طرف</p>
+                </div>
+                <div class="setting-group">
                     <label for="themeSelect">تم رنگی:</label>
                     <select id="themeSelect">
                         <option value="pearl">صدفی کلاسیک</option>
@@ -121,6 +153,23 @@
                 <div class="input-section glass-card">
                     <div class="input-header">
                         <span class="section-title">متن مبدأ</span>
+                        <div class="input-lang-selector">
+                            <select id="sourceLangMobile">
+                                <option value="auto">تشخیص خودکار</option>
+                                <option value="fa">فارسی</option>
+                                <option value="en">انگلیسی</option>
+                                <option value="ar">عربی</option>
+                                <option value="fr">فرانسوی</option>
+                                <option value="de">آلمانی</option>
+                                <option value="es">اسپانیایی</option>
+                                <option value="it">ایتالیایی</option>
+                                <option value="ru">روسی</option>
+                                <option value="ja">ژاپنی</option>
+                                <option value="ko">کره‌ای</option>
+                                <option value="zh">چینی</option>
+                                <option value="tr">ترکی</option>
+                            </select>
+                        </div>
                         <div class="input-actions">
                             <button class="action-btn" id="clearBtn" title="پاک کردن">
                                 <span>🗑️</span>
@@ -142,9 +191,32 @@
                     </div>
                 </div>
 
+                <!-- Mobile Swap Button -->
+                <div class="mobile-swap-btn">
+                    <button id="mobileSwapBtn" title="تعویض زبان‌ها">
+                        <span>⇅</span>
+                    </button>
+                </div>
+
                 <div class="output-section glass-card">
                     <div class="output-header">
                         <span class="section-title">ترجمه</span>
+                        <div class="output-lang-selector">
+                            <select id="targetLangMobile">
+                                <option value="en">انگلیسی</option>
+                                <option value="fa">فارسی</option>
+                                <option value="ar">عربی</option>
+                                <option value="fr">فرانسوی</option>
+                                <option value="de">آلمانی</option>
+                                <option value="es">اسپانیایی</option>
+                                <option value="it">ایتالیایی</option>
+                                <option value="ru">روسی</option>
+                                <option value="ja">ژاپنی</option>
+                                <option value="ko">کره‌ای</option>
+                                <option value="zh">چینی</option>
+                                <option value="tr">ترکی</option>
+                            </select>
+                        </div>
                         <div class="output-actions">
                             <button class="action-btn" id="copyBtn" title="کپی کردن">
                                 <span>📄</span>
